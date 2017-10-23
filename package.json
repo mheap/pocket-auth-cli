@@ -1,0 +1,22 @@
+{
+    "name": "pocket-auth-cli",
+    "description": "Get a Pocket access token via the command line",
+    "version": "1.0.0",
+    "scripts": {
+        "lint": "eslint bin/pocket-auth",
+        "lint-fix": "eslint --fix bin/pocket-auth"
+    },
+    "dependencies": {
+        "opn": "^5.1.0",
+        "pocket-auth": "^1.0.2"
+    },
+    "devDependencies": {
+        "eslint": "^4.9.0",
+        "eslint-config-prettier": "^2.6.0",
+        "eslint-plugin-prettier": "^2.3.1",
+        "prettier": "^1.7.4"
+    },
+    "bin": {
+        "pocket-auth": "./bin/pocket-auth"
+    }
+}

@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+"use strict";
+
+const http = require("http");
+const opn = require("opn");
+const pocket = require("pocket-auth");
+
+const PORT = 3122;
+const redirectUri = "http://localhost:" + PORT;
+
+const binaryName = process.argv[1];
+const consumerKey = process.argv[2];
+
+if (!consumerKey) {
+  console.log("usage: " + binaryName + " <consumer_key>");
+  process.exit(1);
+}
+
+async function main() {
+  try {
+    let code = await pocket.fetchToken(consumerKey, redirectUri, {});
+    let uri = pocket.getRedirectUrl(code.code, redirectUri);
+
+    const server = http.createServer(function(req, res) {
+      setTimeout(async function() {
+        // Ignore favicon etc
+        if (req.url !== "/") {
+          return;
+        }
+
+        // Write our access token on to the page
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        const r = await pocket.getAccessToken(consumerKey, code.code);
+        const body = "Your access token is: " + r.access_token;
+        console.log(r);
+
+        res.end(body);
+        server.close();
+        setTimeout(function() {
+          process.exit();
+        }, 1000);
+      }, 5000);
+    });
+
+    server.listen(PORT, function() {
+      console.log("Opening web browser to authorize application");
+      console.log("Press CTRL+C to cancel");
+      opn(uri);
+    });
+  } catch (err) {
+    console.log("Something went wrong :(");
+    console.log(
+      "Is your consumer_key correct? ( See https://getpocket.com/developer/apps/ )"
+    );
+    console.log("Did you click approve for the application in the browser?");
+  }
+}
+
+main();
