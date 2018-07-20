@@ -5,7 +5,7 @@ A small node.js command line tool for getting an access token for the [Pocket](h
 ### Usage
 
 ```bash
-npm install -g pocket-auth
+npm install -g pocket-auth-cli
 pocket-auth <consumer_key>
 ```
 
